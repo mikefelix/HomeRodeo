@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import dagger.hilt.android.AndroidEntryPoint
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
@@ -21,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import com.mozzarelly.homerodeo.ui.theme.HomeRodeoTheme
 
+@AndroidEntryPoint
 class RodeoActivity : BottomTabsActivity() {
 
   override val viewModel by viewModels<TabsViewModel>()
@@ -47,7 +49,8 @@ class RodeoActivity : BottomTabsActivity() {
 fun HomeRodeoApp(
   viewModel: TabsViewModel = TabsViewModel(),
 ) {
-  var currentDestination by rememberSaveable { mutableStateOf(viewModel.tabs.first()) }
+  var currentDestination by rememberSaveable { mutableStateOf(viewModel.tabs.first().label) }
+  val currentTab = viewModel.tabs.find { it.label == currentDestination }
   val tabs = viewModel.tabs
 
   NavigationSuiteScaffold(
@@ -61,8 +64,8 @@ fun HomeRodeoApp(
             )
           },
           label = { Text(it.label) },
-          selected = it == currentDestination,
-          onClick = { currentDestination = it }
+          selected = it == currentTab,
+          onClick = { currentDestination = it.label }
         )
       }
     }

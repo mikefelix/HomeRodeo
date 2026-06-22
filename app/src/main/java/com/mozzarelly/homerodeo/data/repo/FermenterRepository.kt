@@ -2,8 +2,8 @@ package com.mozzarelly.homerodeo.data.repo
 
 import com.mozzarelly.homerodeo.data.model.Fermenter
 import com.mozzarelly.homerodeo.data.model.Temperature
-import com.mozzarelly.homerodeo.data.ApiResponse
-import com.mozzarelly.homerodeo.data.ApiUnknown
+import com.mozzarelly.homerodeo.util.ApiResponse
+import com.mozzarelly.homerodeo.util.ApiUnknown
 import com.mozzarelly.homerodeo.data.api.FermenterApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject

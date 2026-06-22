@@ -1,7 +1,7 @@
 package com.mozzarelly.homerodeo.data.api
 
 import com.mozzarelly.homerodeo.data.model.Temperature
-import com.mozzarelly.homerodeo.data.ApiResponse
+import com.mozzarelly.homerodeo.util.ApiResponse
 import com.mozzarelly.homerodeo.data.model.Inside
 import com.mozzarelly.homerodeo.data.model.Outside
 import com.mozzarelly.homerodeo.data.model.SecurityMode

@@ -1,7 +1,7 @@
 package com.mozzarelly.homerodeo.data.api
 
 import com.mozzarelly.homerodeo.data.model.Fermenter
-import com.mozzarelly.homerodeo.data.ApiResponse
+import com.mozzarelly.homerodeo.util.ApiResponse
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST

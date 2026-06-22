@@ -1,7 +1,7 @@
 package com.mozzarelly.homerodeo.data.api
 
 import com.mozzarelly.homerodeo.data.model.Alarm
-import com.mozzarelly.homerodeo.data.ApiResponse
+import com.mozzarelly.homerodeo.util.ApiResponse
 import retrofit2.http.*
 
 /*

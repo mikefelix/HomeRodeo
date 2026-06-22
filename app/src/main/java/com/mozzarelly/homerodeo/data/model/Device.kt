@@ -1,10 +1,7 @@
 package com.mozzarelly.homerodeo.data.model
 
-import androidx.recyclerview.widget.DiffUtil
 import com.mozzarelly.homerodeo.data.repo.DeviceAlias
 import com.mozzarelly.homerodeo.data.repo.DeviceName
-import com.mozzarelly.rodeo.devices.drawableForLocation
-import com.mozzarelly.rodeo.devices.drawableForType
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -60,9 +57,6 @@ data class Device(
     override val description: String
         get() = alias.string
 
-    val iconForType get() = drawableForType(alias.string)
-    val iconForLocation get() = drawableForLocation(alias.string)
-
 //    var TODO: ability to set lock and power independently
 
     override val stateText: String
@@ -82,12 +76,6 @@ data class Device(
 
     override fun toString(): String = """${alias ?: name} (${on})"""
 
-    companion object {
-        val Differ = object: DiffUtil.ItemCallback<Device>() {
-            override fun areItemsTheSame(p0: Device, p1: Device): Boolean = p0.name == p1.name
-            override fun areContentsTheSame(p0: Device, p1: Device): Boolean = p0 == p1
-        }
-    }
 }
 
 @Serializable

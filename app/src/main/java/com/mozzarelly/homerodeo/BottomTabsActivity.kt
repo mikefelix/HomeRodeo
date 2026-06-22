@@ -6,7 +6,10 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import com.mozzarelly.homerodeo.ui.theme.HomeRodeoTheme
+import dagger.hilt.android.AndroidEntryPoint
+//import kotlinx.parcelize.Parcelize
 
+@AndroidEntryPoint
 abstract class BottomTabsActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -24,13 +27,9 @@ abstract class BottomTabsActivity : ComponentActivity() {
   abstract val viewModel: TabsViewModel
 }
 
+//@Parcelize
 data class Tab(
   val label: String,
   val icon: Int,
-) /*{
-  HOME("Home", R.drawable.ic_home),
-  FAVORITES("Favorites", R.drawable.ic_favorite),
-  PROFILE("Profile", R.drawable.ic_account_box),
-}*/
-
-
+)/* : Parcelable*/ {
+}

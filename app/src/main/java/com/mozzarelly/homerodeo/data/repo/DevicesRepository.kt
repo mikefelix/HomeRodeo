@@ -1,14 +1,14 @@
 package com.mozzarelly.homerodeo.data.repo
 
 import com.mozzarelly.homerodeo.data.model.Device
-import com.mozzarelly.homerodeo.data.ApiResponse
-import com.mozzarelly.homerodeo.data.ApiUnknown
+import com.mozzarelly.homerodeo.util.ApiResponse
+import com.mozzarelly.homerodeo.util.ApiUnknown
 import com.mozzarelly.homerodeo.data.api.DevicesApi
-import com.mozzarelly.homerodeo.data.map
-import com.mozzarelly.homerodeo.data.resultOrElse
-import com.mozzarelly.rodeo.toUiStateFlow
-import com.mozzarelly.rodeo.update
-import com.mozzarelly.rodeo.updateCopying
+import com.mozzarelly.homerodeo.util.map
+import com.mozzarelly.homerodeo.util.resultOrElse
+import com.mozzarelly.homerodeo.util.toUiStateFlow
+import com.mozzarelly.homerodeo.util.update
+import com.mozzarelly.homerodeo.util.updateCopying
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,7 +27,7 @@ value class DeviceAlias(val string: String)
 
 @Singleton
 class DevicesRepository @Inject constructor(
-  private val dao: DeviceNamesRepository,
+  private val namesRepository: DeviceNamesRepository,
   private val api: DevicesApi,
 ) {
   companion object { var count = 0 }
@@ -37,7 +37,7 @@ class DevicesRepository @Inject constructor(
   private lateinit var aliasToNameMappings: Map<DeviceAlias, DeviceName>
   private lateinit var nameToAliasMappings: Map<DeviceName, DeviceAlias>
 
-  val favoriteDevices: List<DeviceAlias> by lazy { dao.getRecentDevices().mapNotNull { nameToAliasMappings[it] } }
+  val favoriteDevices: List<DeviceAlias> by lazy { namesRepository.getRecentDevices().mapNotNull { nameToAliasMappings[it] } }
 
   init {
     loadAliases()
@@ -47,7 +47,7 @@ class DevicesRepository @Inject constructor(
     it to getDeviceFlowByAlias(it)
   }
 
-  fun recentDeviceFlows(scope: CoroutineScope) = dao.getRecentDevices(5).map {
+  fun recentDeviceFlows(scope: CoroutineScope) = namesRepository.getRecentDevices(5).map {
     nameToAliasMappings[it]!! to getDeviceFlowByName(it).toUiStateFlow(scope)
   }
 
@@ -104,7 +104,7 @@ class DevicesRepository @Inject constructor(
 
   suspend fun setFavoriteStatus(alias: DeviceAlias, favorite: Boolean){
     val name = getName(alias)
-    dao.toggleFavoriteStatus(name)
+    namesRepository.toggleFavoriteStatus(name)
   }
 
   suspend fun toggleDeviceByName(name: DeviceName) {
@@ -117,9 +117,9 @@ class DevicesRepository @Inject constructor(
   private suspend fun loadDevice(alias: DeviceAlias, source: String){
     val name = getName(alias)
     val flow = getDeviceFlowByAlias(alias)
-    flow.update {
+    (flow as MutableStateFlow).update {
       api.getDevice(name.string)
-        .also { println("zzzdev refresh in $id for $source: $name/$alias to $it") }
+        .also { println("zzzdev refresh for $source: $name/$alias to $it") }
     }
   }
 
@@ -128,23 +128,23 @@ class DevicesRepository @Inject constructor(
   }
 
   fun invalidateAliases(){
-    dao.setDeviceGroups(null)
+    namesRepository.setDeviceGroups(null)
   }
 
   fun clearRecentDevices(){
-    dao.clearRecentDevices()
+    namesRepository.clearRecentDevices()
   }
 
   private fun loadAliases(){
     runBlocking {
-      if (!dao.hasData){
+      if (!namesRepository.hasData){
         val groups = api.getDeviceGroups().resultOrElse { error("Loading device groups failed.") }
-        dao.setDeviceGroups(groups)
+        namesRepository.setDeviceGroups(groups)
       }
 
-      aliases = dao.getDeviceAliases()
-      nameToAliasMappings = dao.getNameToAliasMappings()
-      aliasToNameMappings = dao.getAliasToNameMappings()
+      aliases = namesRepository.getDeviceAliases()
+      nameToAliasMappings = namesRepository.getNameToAliasMappings()
+      aliasToNameMappings = namesRepository.getAliasToNameMappings()
     }
   }
 
@@ -165,7 +165,7 @@ class DevicesRepository @Inject constructor(
   }
 
   suspend fun refreshByName(name: DeviceName, source: String) {
-    val alias = dao.getNameToAliasMappings()[name] ?: error("Can't get alias for $name")
+    val alias = namesRepository.getNameToAliasMappings()[name] ?: error("Can't get alias for $name")
     refresh(alias, source)
   }
 

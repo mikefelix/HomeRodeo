@@ -1,7 +1,7 @@
 package com.mozzarelly.homerodeo.data.repo
 
 import com.mozzarelly.homerodeo.data.model.Alarm
-import com.mozzarelly.homerodeo.data.ApiResponse
+import com.mozzarelly.homerodeo.util.ApiResponse
 import com.mozzarelly.homerodeo.data.api.AlarmApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow

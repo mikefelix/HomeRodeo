@@ -1,4 +1,4 @@
-package com.mozzarelly.homerodeo.data
+package com.mozzarelly.homerodeo.util
 
 import okhttp3.Request
 import okio.Timeout

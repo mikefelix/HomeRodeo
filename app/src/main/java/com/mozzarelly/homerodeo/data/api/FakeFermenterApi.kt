@@ -4,9 +4,9 @@ import com.mozzarelly.homerodeo.data.model.Fermenter
 import com.mozzarelly.homerodeo.data.model.FermenterMode
 import com.mozzarelly.homerodeo.data.model.FermenterProgram
 import com.mozzarelly.homerodeo.data.model.Temperature
-import com.mozzarelly.homerodeo.data.ApiResponse
-import com.mozzarelly.homerodeo.data.ApiResult
-import com.mozzarelly.homerodeo.data.map
+import com.mozzarelly.homerodeo.util.ApiResponse
+import com.mozzarelly.homerodeo.util.ApiResult
+import com.mozzarelly.homerodeo.util.map
 import kotlinx.coroutines.delay
 
 class FakeFermenterApi : FermenterApi {

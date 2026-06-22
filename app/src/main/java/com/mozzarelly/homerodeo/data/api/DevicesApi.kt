@@ -3,7 +3,7 @@ package com.mozzarelly.homerodeo.data.api
 import com.mozzarelly.homerodeo.data.model.Device
 import com.mozzarelly.homerodeo.data.model.DeviceGroups
 import com.mozzarelly.homerodeo.data.model.Devices
-import com.mozzarelly.homerodeo.data.ApiResponse
+import com.mozzarelly.homerodeo.util.ApiResponse
 import com.mozzarelly.homerodeo.data.repo.DeviceName
 import retrofit2.http.DELETE
 import retrofit2.http.GET
