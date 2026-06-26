@@ -12,9 +12,7 @@ import javax.inject.Singleton
 @Singleton
 class FermenterRepository @Inject constructor(
   private val api: FermenterApi
-)  {
-  companion object { var count = 0 }
-
+) {
   val fermenterFlow = MutableStateFlow<ApiResponse<Fermenter>>(ApiUnknown())
 
   suspend fun getFermenter(source: String) = api.getFermenter(source)

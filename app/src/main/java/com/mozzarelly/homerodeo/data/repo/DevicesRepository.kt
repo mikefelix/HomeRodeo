@@ -30,8 +30,6 @@ class DevicesRepository @Inject constructor(
   private val namesRepository: DeviceNamesRepository,
   private val api: DevicesApi,
 ) {
-  companion object { var count = 0 }
-
   private val deviceFlows = ConcurrentHashMap<DeviceAlias, DeviceFlow>()
   private lateinit var aliases: List<DeviceAlias>
   private lateinit var aliasToNameMappings: Map<DeviceAlias, DeviceName>

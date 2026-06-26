@@ -1,6 +1,6 @@
 package com.mozzarelly.homerodeo.data.repo
 
-import com.mozzarelly.homerodeo.data.model.Alarm
+import com.mozzarelly.homerodeo.data.model.AlarmData
 import com.mozzarelly.homerodeo.util.ApiResponse
 import com.mozzarelly.homerodeo.data.api.AlarmApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,9 +12,7 @@ import javax.inject.Singleton
 class AlarmRepository @Inject constructor(
   private val api: AlarmApi
 ) {
-  companion object { var count = 0 }
-
-  private val currentState = MutableStateFlow<ApiResponse<Alarm>?>(null)
+  val currentState = MutableStateFlow<ApiResponse<AlarmData>?>(null)
 
   val alarmFlow = flow {
     refresh()
@@ -24,7 +22,7 @@ class AlarmRepository @Inject constructor(
     }
   }
 
-  private suspend fun getAlarm(): ApiResponse<Alarm> = api.getAlarm()
+  private suspend fun getAlarm(): ApiResponse<AlarmData> = api.getAlarm()
 
   suspend fun saveDay(day: String, setting: String, saveAsSetting: Boolean) = (if (saveAsSetting)
       api.saveSetting(day, setting)

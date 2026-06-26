@@ -2,6 +2,7 @@
 
 package com.mozzarelly.homerodeo.util
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
 import android.appwidget.AppWidgetManager
@@ -15,8 +16,25 @@ import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Divider
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.mozzarelly.homerodeo.R
 import com.mozzarelly.homerodeo.data.model.FurnaceMode
 import com.mozzarelly.homerodeo.data.model.FurnaceState
@@ -24,10 +42,12 @@ import com.mozzarelly.homerodeo.data.model.Inside
 import com.mozzarelly.homerodeo.data.model.Outside
 import com.mozzarelly.homerodeo.data.model.Temperature
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlin.math.roundToInt
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
@@ -478,3 +498,51 @@ fun String.to12HourTime() = split(":").takeIf { it.size == 2 }?.let {
 } ?: this
 
 fun <T> T?.notNullAnd(predicate: (T) -> Boolean): Boolean = this != null && predicate(this)
+
+
+@Composable
+fun FullCenteredRow(modifier: Modifier = Modifier, content: @Composable RowScope.() -> Unit){
+  Row(
+    modifier = modifier.fillMaxWidth(),
+    verticalAlignment = Alignment.CenterVertically,
+    horizontalArrangement = Arrangement.Center
+  ){
+    content()
+  }
+}
+
+@Composable
+fun VerticalDivider(modifier: Modifier = Modifier){
+  Divider(modifier = modifier
+    .fillMaxHeight()
+    .width(1.dp)
+  )
+}
+
+@SuppressLint("ComposableNaming")
+@Composable
+fun <T> Flow<T>.collectAsEffect(
+  block: (T) -> Unit
+) {
+  val lifecycleOwner = LocalLifecycleOwner.current
+  LaunchedEffect(this, lifecycleOwner.lifecycle) {
+    lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+      this@collectAsEffect.collectLatest { block.invoke(it) }
+    }
+  }
+}
+
+inline fun Modifier.applyIf(condition: Boolean, effect: Modifier.() -> Modifier) = if (condition) effect() else this
+
+fun NavController.navigateAsTop(route: String) = navigate(route){
+  // Pop up to the start destination of the graph to avoid building up a large stack of destinations on the back stack as users select items
+  popUpTo(graph.findStartDestination().id) {
+    saveState = true
+  }
+
+  // Avoid multiple copies of the same destination when reselecting the same item
+  launchSingleTop = true
+
+  // Restore state when reselecting a previously selected item
+  restoreState = true
+}

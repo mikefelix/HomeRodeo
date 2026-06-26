@@ -50,7 +50,7 @@ import java.util.Calendar
  */
 
 @Serializable
-data class Alarm(
+data class AlarmData(
     @SerialName("on") val on: Boolean,
     @SerialName("nextNum") val nextNum: Int,
     @SerialName("override") val override: AlarmOverride? = null,
@@ -89,7 +89,7 @@ data class Alarm(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is Alarm) return false
+        if (other !is AlarmData) return false
         if (on != other.on) return false
         if (nextNum != other.nextNum) return false
         if (override != other.override) return false

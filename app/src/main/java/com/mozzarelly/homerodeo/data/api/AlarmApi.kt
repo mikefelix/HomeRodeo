@@ -1,6 +1,6 @@
 package com.mozzarelly.homerodeo.data.api
 
-import com.mozzarelly.homerodeo.data.model.Alarm
+import com.mozzarelly.homerodeo.data.model.AlarmData
 import com.mozzarelly.homerodeo.util.ApiResponse
 import retrofit2.http.*
 
@@ -17,10 +17,10 @@ import retrofit2.http.*
  */
 interface AlarmApi {
     @GET("alarm")
-    suspend fun getAlarm(): ApiResponse<Alarm>
+    suspend fun getAlarm(): ApiResponse<AlarmData>
 
     @PUT("alarm")
-    suspend fun setAlarm(@Body alarm: Alarm): Alarm
+    suspend fun setAlarm(@Body alarm: AlarmData): AlarmData
 
     @POST("alarm/{day}/{set}")
     suspend fun saveSetting(@Path("day") day: String, @Path("set") set: String)

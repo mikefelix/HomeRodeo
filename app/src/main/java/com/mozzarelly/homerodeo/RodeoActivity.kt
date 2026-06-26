@@ -14,12 +14,18 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
+import com.mozzarelly.homerodeo.ui.screens.AlarmScreen
+import com.mozzarelly.homerodeo.ui.screens.DevicesScreen
+import com.mozzarelly.homerodeo.ui.screens.FermenterScreen
+import com.mozzarelly.homerodeo.ui.screens.SummaryScreen
+import com.mozzarelly.homerodeo.ui.screens.WeatherScreen
 import com.mozzarelly.homerodeo.ui.theme.HomeRodeoTheme
 
 @AndroidEntryPoint
@@ -50,7 +56,7 @@ fun HomeRodeoApp(
   viewModel: TabsViewModel = TabsViewModel(),
 ) {
   var currentDestination by rememberSaveable { mutableStateOf(viewModel.tabs.first().label) }
-  val currentTab = viewModel.tabs.find { it.label == currentDestination }
+  val currentTab = remember(currentDestination) { viewModel.tabs.find { it.label == currentDestination }!! }
   val tabs = viewModel.tabs
 
   NavigationSuiteScaffold(
@@ -71,11 +77,22 @@ fun HomeRodeoApp(
     }
   ) {
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-      Greeting(
-        name = "Android",
+      TabContent(
+        tab = currentTab,
         modifier = Modifier.padding(innerPadding)
       )
     }
+  }
+}
+
+@Composable
+fun TabContent(tab: Tab, modifier: Modifier) {
+  when (tab.label) {
+    "Summary" -> SummaryScreen()
+    "Devices" -> DevicesScreen()
+    "Alarm" -> AlarmScreen()
+    "Fermenter" -> FermenterScreen()
+    "Weather" -> WeatherScreen()
   }
 }
 
