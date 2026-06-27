@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun TitleBar(
+  title: String? = "Rodeo",
 ) {
   Row(verticalAlignment = Alignment.CenterVertically,
     modifier = Modifier
@@ -21,13 +22,15 @@ fun TitleBar(
       .height(48.dp)
       .background(MaterialTheme.colorScheme.primary)
   ) {
-    TitleText(
-      text = "Rodeo",
-      color = MaterialTheme.colorScheme.onPrimary,
-      align = TextAlign.Start,
-      modifier = Modifier
-        .padding(horizontal = 16.dp)
-        .weight(1f)
-    )
+    if (title != null) {
+      TitleText(
+        text = title,
+        color = MaterialTheme.colorScheme.onPrimary,
+        align = TextAlign.Start,
+        modifier = Modifier
+          .padding(horizontal = 16.dp)
+          .weight(1f)
+      )
+    }
   }
 }

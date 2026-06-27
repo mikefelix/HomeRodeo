@@ -11,12 +11,12 @@ import com.mozzarelly.homerodeo.data.repo.DeviceName
 import com.mozzarelly.homerodeo.data.repo.DevicesRepository
 import com.mozzarelly.homerodeo.util.UiState
 import com.mozzarelly.homerodeo.util.map
-import com.mozzarelly.homerodeo.util.mutable
 import com.mozzarelly.homerodeo.util.toUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -24,6 +24,7 @@ import javax.inject.Inject
 
 interface AlarmActions {
   fun editDay(day: Day)
+  fun dismissEdit()
   fun setTime(day: Day, time: Time?, saveAsSetting: Boolean)
   fun disableToday()
 }
@@ -35,16 +36,19 @@ class AlarmViewModel @Inject constructor(
   private val savedStateHandle: SavedStateHandle
 ) : ViewModel(), AlarmActions {
 
-  val state: StateFlow<UiState<AlarmData>> = repo.alarmFlow.map {
-    it.map { it.copy(disabledToday = disabledForDay == currentDay()) }.toUiState()
-  }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), UiState.loading())
-
-  private val dayUnderEdit: StateFlow<Day?> = MutableStateFlow(null)
+  val dayUnderEdit = MutableStateFlow<Day?>(null)
 
   private var disabledForDay: Long? = null
 
+  val state: StateFlow<UiState<AlarmData>> = repo.alarmFlow.map { it.toUiState() }
+    .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), UiState.loading())
+
   override fun editDay(day: Day) {
-    dayUnderEdit.mutable().value = day
+    dayUnderEdit.value = day
+  }
+
+  override fun dismissEdit() {
+    dayUnderEdit.value = null
   }
 
   override fun setTime(day: Day, time: Time?, saveAsSetting: Boolean) {
