@@ -33,9 +33,7 @@ class FakeDevicesApi : DevicesApi {
         aliases = deviceList.associate { it._name to it._alias },
     )
 
-    private fun findDevice(name: String): Device =
-        deviceList.firstOrNull { it._name == name }
-            ?: Device(name, name, offline = true)
+    private fun findDevice(name: String): Device = deviceList.firstOrNull { it._name == name } ?: Device(name, name, offline = true)
 
     private fun updateDevice(name: String, update: (Device) -> Device): ApiResponse<Device> {
         val idx = deviceList.indexOfFirst { it._name == name }

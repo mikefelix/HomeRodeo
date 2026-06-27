@@ -2,6 +2,8 @@ package com.mozzarelly.homerodeo.data.model
 
 import com.mozzarelly.homerodeo.data.repo.DeviceAlias
 import com.mozzarelly.homerodeo.data.repo.DeviceName
+import com.mozzarelly.homerodeo.ui.util.drawableForLocation
+import com.mozzarelly.homerodeo.ui.util.drawableForType
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -76,6 +78,8 @@ data class Device(
 
     override fun toString(): String = """${alias ?: name} (${on})"""
 
+    val iconForType get() = drawableForType(alias.string)
+    val iconForLocation get() = drawableForLocation(alias.string)
 }
 
 @Serializable

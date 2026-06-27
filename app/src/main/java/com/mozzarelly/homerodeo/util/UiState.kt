@@ -39,30 +39,6 @@ fun <R: Any> ApiResponse<R>.toUiState(
   }
 }
 
-class UiStateFlow<T: Any>(backingFlow: Flow<ApiResponse<T>>, scope: CoroutineScope): StateFlow<UiState<T>> {
-  private val manualFlow = MutableStateFlow<UiState<T>>(UiState.loading())
-  private val combinedFlow = merge(backingFlow.map { it.toUiState() }, manualFlow)
+fun <T: Any, A: ApiResponse<T>> Flow<A>.toUiStateFlow(scope: CoroutineScope): StateFlow<UiState<T>> =
+  map { it.toUiState() }
     .stateIn(scope, SharingStarted.WhileSubscribed(3000), UiState.loading())
-
-  override val replayCache: List<UiState<T>>
-    get() = combinedFlow.replayCache
-
-  override suspend fun collect(collector: FlowCollector<UiState<T>>): Nothing {
-    combinedFlow.collect(collector)
-  }
-
-  override val value: UiState<T>
-    get() = combinedFlow.value
-
-  fun emitLoading(){
-    manualFlow.value = value.markLoading()
-  }
-
-  fun emit(t: () -> T) {
-    manualFlow.value = UiState(t())
-  }
-}
-
-fun <T: Any, A: ApiResponse<T>> Flow<A>.toUiStateFlow(scope: CoroutineScope): UiStateFlow<T> = UiStateFlow(this, scope)
-//  map { it.toUiState() }
-//    .stateIn(scope, SharingStarted.WhileSubscribed(3000), UiState.loading())

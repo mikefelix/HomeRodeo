@@ -159,7 +159,7 @@ data class Day(
     val week = if (num > 6) 2 else 1
 
     @Transient
-    val name = if (num < 0) "None" else DayNames.values()[num % 7].toString()
+    val name = if (num < 0) "None" else DayNames.entries[num % 7].toString()
 
     operator fun minus(days: Int) = copy(num = if (num == 0) 13 else num - days)
     operator fun plus(days: Int) = copy(num = if (num == 13) 0 else num + days)

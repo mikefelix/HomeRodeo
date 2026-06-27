@@ -2,6 +2,8 @@ package com.mozzarelly.rodeo.ui.composables
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -12,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -23,10 +24,11 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
@@ -38,23 +40,25 @@ fun <T> ScrollingPicker(
   startIndex: Int = 0,
   selectionState: MutableState<Int> = remember { mutableIntStateOf(startIndex) },
   visibleItemsCount: Int = 3,
+  itemHeight: Dp = 48.dp,
   textModifier: Modifier = Modifier,
   textStyle: TextStyle = LocalTextStyle.current,
   dividerColor: Color = LocalContentColor.current,
 ) {
+  if (items.isEmpty()) return
+  
   val visibleItemsMiddle = visibleItemsCount / 2
-  val listScrollCount = Integer.MAX_VALUE
+  val listScrollCount = 1000 * items.size
   val listScrollMiddle = listScrollCount / 2
   val listStartIndex = listScrollMiddle - listScrollMiddle % items.size - visibleItemsMiddle + startIndex
   val listState = rememberLazyListState(initialFirstVisibleItemIndex = listStartIndex)
   val flingBehavior = rememberSnapFlingBehavior(lazyListState = listState)
-  val itemHeightPixels = remember { mutableStateOf(0) }
-  val itemHeightDp = pixelsToDp(itemHeightPixels.value)
 
   val fadingEdgeGradient = remember {
     Brush.verticalGradient(
       0f to Color.Transparent,
-      0.5f to Color.Black,
+      0.2f to Color.Black,
+      0.8f to Color.Black,
       1f to Color.Transparent
     )
   }
@@ -66,38 +70,33 @@ fun <T> ScrollingPicker(
       .collect { selectionState.value = it }
   }
 
-//  Row(modifier = modifier) {
-    LazyColumn(
-      state = listState,
-      flingBehavior = flingBehavior,
-      horizontalAlignment = Alignment.CenterHorizontally,
-      modifier = modifier
-        .height(itemHeightDp * visibleItemsCount)
-        .fadingEdge(fadingEdgeGradient)
-    ) {
-      items(listScrollCount) { index ->
+  LazyColumn(
+    state = listState,
+    flingBehavior = flingBehavior,
+    horizontalAlignment = Alignment.CenterHorizontally,
+    modifier = modifier
+      .height(itemHeight * visibleItemsCount)
+      .fadingEdge(fadingEdgeGradient)
+  ) {
+    items(listScrollCount) { index ->
+      Box(
+        modifier = Modifier
+          .height(itemHeight)
+          .fillMaxWidth(),
+        contentAlignment = Alignment.Center
+      ) {
         Text(
           text = items[index % items.size].toString(),
           maxLines = 1,
           overflow = TextOverflow.Ellipsis,
           style = textStyle,
-          modifier = Modifier
-            .onSizeChanged { size -> itemHeightPixels.value = size.height }
-            .then(textModifier)
+          color = LocalContentColor.current,
+          textAlign = TextAlign.Center,
+          modifier = textModifier
         )
       }
     }
-
-  /*  HorizontalDivider(
-      color = dividerColor,
-      modifier = Modifier.offset(y = itemHeightDp * visibleItemsMiddle)
-    )
-
-    HorizontalDivider(
-      color = dividerColor,
-      modifier = Modifier.offset(y = itemHeightDp * (visibleItemsMiddle + 1))
-    )*/
-//  }
+  }
 }
 
 private fun Modifier.fadingEdge(brush: Brush) = this
@@ -106,6 +105,3 @@ private fun Modifier.fadingEdge(brush: Brush) = this
     drawContent()
     drawRect(brush = brush, blendMode = BlendMode.DstIn)
   }
-
-@Composable
-private fun pixelsToDp(pixels: Int) = with(LocalDensity.current) { pixels.toDp() }

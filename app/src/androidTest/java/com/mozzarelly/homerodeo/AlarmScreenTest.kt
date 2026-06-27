@@ -2,6 +2,7 @@ package com.mozzarelly.homerodeo
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
@@ -59,6 +60,7 @@ class AlarmScreenTest {
         composeRule.setContent {
             AlarmScreen(
                 state = UiState.success(makeAlarm()),
+                sheetState = remember { mutableStateOf(null) },
                 onRetry = {},
                 actions = actions,
             )
@@ -71,6 +73,7 @@ class AlarmScreenTest {
         composeRule.setContent {
             AlarmScreen(
                 state = UiState.success(makeAlarm()),
+                sheetState = remember { mutableStateOf(null) },
                 onRetry = {},
                 actions = actions,
             )
@@ -87,6 +90,7 @@ class AlarmScreenTest {
         composeRule.setContent {
             AlarmScreen(
                 state = UiState.success(makeAlarm()),
+                sheetState = remember { mutableStateOf(null) },
                 onRetry = {},
                 actions = actions,
             )
@@ -99,6 +103,7 @@ class AlarmScreenTest {
         composeRule.setContent {
             AlarmScreen(
                 state = UiState.success(makeAlarm()),
+                sheetState = remember { mutableStateOf(null) },
                 onRetry = {},
                 actions = actions,
             )
@@ -111,6 +116,7 @@ class AlarmScreenTest {
         composeRule.setContent {
             AlarmScreen(
                 state = UiState.error("Network error"),
+                sheetState = remember { mutableStateOf(null) },
                 onRetry = {},
                 actions = actions,
             )
@@ -124,6 +130,7 @@ class AlarmScreenTest {
         composeRule.setContent {
             AlarmScreen(
                 state = UiState.loading(),
+                sheetState = remember { mutableStateOf(null) },
                 onRetry = {},
                 actions = actions,
             )
@@ -137,6 +144,7 @@ class AlarmScreenTest {
         composeRule.setContent {
             AlarmScreen(
                 state = UiState.success(alarm),
+                sheetState = remember { mutableStateOf(null) },
                 onRetry = {},
                 actions = actions,
             )
@@ -149,6 +157,7 @@ class AlarmScreenTest {
         composeRule.setContent {
             AlarmScreen(
                 state = UiState.success(makeAlarm(on = false)),
+                sheetState = remember { mutableStateOf(null) },
                 onRetry = {},
                 actions = actions,
             )
@@ -159,12 +168,12 @@ class AlarmScreenTest {
     @Test
     fun bottomSheetShowsCorrectDayWhenDayRowClicked() {
         val alarm = makeAlarm()
-        var dayUnderEdit by mutableStateOf<Day?>(null)
+        val dayUnderEdit = mutableStateOf<Day?>(null)
 
         // Delegate to the mock for recording, but also update dayUnderEdit so the sheet opens.
         val delegatingActions = object : AlarmActions {
             override fun editDay(day: Day) {
-                dayUnderEdit = day
+                dayUnderEdit.value = day
                 actions.editDay(day)
             }
             override fun dismissEdit() = actions.dismissEdit()
@@ -175,7 +184,7 @@ class AlarmScreenTest {
         composeRule.setContent {
             AlarmScreen(
                 state = UiState.success(alarm),
-                dayUnderEdit = dayUnderEdit,
+                sheetState = dayUnderEdit,
                 onRetry = {},
                 actions = delegatingActions,
             )
@@ -186,6 +195,7 @@ class AlarmScreenTest {
         composeRule.onAllNodesWithText("Wed")[0].performClick()
 
         verify(actions).editDay(any())
+
         composeRule.onNodeWithText("Save").assertIsDisplayed()
         composeRule.onNodeWithText("Cancel").assertIsDisplayed()
         // "Wed" appears in both the grid and the bottom sheet title
@@ -200,7 +210,7 @@ class AlarmScreenTest {
         composeRule.setContent {
             AlarmScreen(
                 state = UiState.success(alarm),
-                dayUnderEdit = dayUnderEdit,
+                sheetState = remember { mutableStateOf(dayUnderEdit) },
                 onRetry = {},
                 actions = actions,
             )

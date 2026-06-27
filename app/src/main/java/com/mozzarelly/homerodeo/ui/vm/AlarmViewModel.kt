@@ -9,6 +9,7 @@ import com.mozzarelly.homerodeo.data.model.Time
 import com.mozzarelly.homerodeo.data.repo.AlarmRepository
 import com.mozzarelly.homerodeo.data.repo.DeviceName
 import com.mozzarelly.homerodeo.data.repo.DevicesRepository
+import com.mozzarelly.homerodeo.ui.util.ViewModelWithBottomSheet
 import com.mozzarelly.homerodeo.util.UiState
 import com.mozzarelly.homerodeo.util.map
 import com.mozzarelly.homerodeo.util.toUiState
@@ -34,9 +35,7 @@ class AlarmViewModel @Inject constructor(
   private val repo: AlarmRepository,
   private val deviceRepo: DevicesRepository,
   private val savedStateHandle: SavedStateHandle
-) : ViewModel(), AlarmActions {
-
-  val dayUnderEdit = MutableStateFlow<Day?>(null)
+) : ViewModelWithBottomSheet<Day>(), AlarmActions {
 
   private var disabledForDay: Long? = null
 
@@ -44,11 +43,11 @@ class AlarmViewModel @Inject constructor(
     .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), UiState.loading())
 
   override fun editDay(day: Day) {
-    dayUnderEdit.value = day
+    showSheet(day)
   }
 
   override fun dismissEdit() {
-    dayUnderEdit.value = null
+    hideSheet()
   }
 
   override fun setTime(day: Day, time: Time?, saveAsSetting: Boolean) {

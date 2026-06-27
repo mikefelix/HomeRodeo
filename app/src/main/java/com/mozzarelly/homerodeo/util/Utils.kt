@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
@@ -42,12 +43,14 @@ import com.mozzarelly.homerodeo.data.model.Inside
 import com.mozzarelly.homerodeo.data.model.Outside
 import com.mozzarelly.homerodeo.data.model.Temperature
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
@@ -503,20 +506,13 @@ fun <T> T?.notNullAnd(predicate: (T) -> Boolean): Boolean = this != null && pred
 @Composable
 fun FullCenteredRow(modifier: Modifier = Modifier, content: @Composable RowScope.() -> Unit){
   Row(
-    modifier = modifier.fillMaxWidth(),
+    modifier = modifier
+      .fillMaxWidth(),
     verticalAlignment = Alignment.CenterVertically,
     horizontalArrangement = Arrangement.Center
   ){
     content()
   }
-}
-
-@Composable
-fun VerticalDivider(modifier: Modifier = Modifier){
-  Divider(modifier = modifier
-    .fillMaxHeight()
-    .width(1.dp)
-  )
 }
 
 @SuppressLint("ComposableNaming")
@@ -528,6 +524,18 @@ fun <T> Flow<T>.collectAsEffect(
   LaunchedEffect(this, lifecycleOwner.lifecycle) {
     lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
       this@collectAsEffect.collectLatest { block.invoke(it) }
+    }
+  }
+}
+
+fun CoroutineScope.launchSafe(onError: (Throwable) -> Unit, block: suspend CoroutineScope.() -> Unit) {
+  launch {
+    try {
+      block()
+    }
+    catch (t: Throwable) {
+      t.rethrowIfCancellation()
+      onError(t)
     }
   }
 }

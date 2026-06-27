@@ -27,6 +27,7 @@ android {
         testInstrumentationRunner = "com.mozzarelly.homerodeo.HiltTestRunner"
 
         buildConfigField("String", "API_AUTH", "\"${localProps.getProperty("api_auth") ?: ""}\"")
+        buildConfigField("String", "BASE_URL", "\"${localProps.getProperty("base_url") ?: ""}\"")
     }
 
     buildTypes {

@@ -38,3 +38,7 @@ The tab items (Home, Favorites, Profile) are defined in `TabsViewModel.tabs` and
 - Material3 with `NavigationSuiteScaffold` for adaptive navigation
 - `minSdk = 33`, `compileSdk = 36`
 - ViewModel via `androidx.lifecycle.viewmodel.compose`
+
+## Coding style
+
+- Always add a blank line after a line containing just a closing brace, except when the next keyword is `else`, `catch` or `finally`.
