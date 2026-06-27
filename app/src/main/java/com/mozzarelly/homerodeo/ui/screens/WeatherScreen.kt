@@ -1,16 +1,17 @@
 package com.mozzarelly.homerodeo.ui.screens
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
+import com.mozzarelly.homerodeo.util.UiState
+import com.mozzarelly.homerodeo.util.composables.FullSizeUiWithSheet
 import com.mozzarelly.homerodeo.util.composables.TitleText
 
 @Composable
 fun WeatherScreen(
-  modifier: Modifier = Modifier
 ) {
-  Column(
-    modifier = modifier
+  FullSizeUiWithSheet(
+    state = UiState(),
+    onRetry = {},
+    sheetContent = { _: String -> },
   ){
     TitleText("Weather")
   }
