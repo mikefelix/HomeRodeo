@@ -6,6 +6,7 @@ import com.mozzarelly.homerodeo.ui.util.drawableForLocation
 import com.mozzarelly.homerodeo.ui.util.drawableForType
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import java.util.Locale
 
 interface RodeoControl {
     val name: DeviceName
@@ -71,7 +72,7 @@ data class Device(
 
     override val stateSubtext = ""
 
-    fun desc() = alias.string.capitalize()
+    fun desc() = alias.string.capitalize(Locale.ROOT)
     fun isOn() = on ?: false
     fun isOverridden() = overridden
     fun isOffline(): Boolean = offline

@@ -67,7 +67,10 @@ class FakeAlarmApi : AlarmApi {
         delay(500)
         val dayNum = day.toIntOrNull() ?: return
         alarm = alarm.copy(days = alarm.days.map {
-            if (it.num == dayNum) it.copy(time = Time.fromString(set), overridden = true) else it
+            if (it.num == dayNum)
+                it.copy(time = runCatching { Time.fromString(set) }.getOrNull(), overridden = true)
+            else
+                it
         })
     }
 

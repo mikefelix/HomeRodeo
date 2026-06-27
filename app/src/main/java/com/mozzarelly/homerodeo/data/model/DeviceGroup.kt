@@ -2,6 +2,7 @@ package com.mozzarelly.homerodeo.data.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import java.util.Locale
 
 /*
 
@@ -15,5 +16,5 @@ data class DeviceGroup(
     @SerialName("collapsed") var collapsed: Boolean = false,
     @SerialName("devices") val devices: List<String>
 ){
-    fun desc() = name.capitalize()
+    fun desc() = name.capitalize(Locale.ROOT)
 }

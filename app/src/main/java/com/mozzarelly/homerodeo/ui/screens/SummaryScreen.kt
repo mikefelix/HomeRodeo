@@ -14,5 +14,4 @@ fun SummaryScreen(
   ){
     TitleText("Summary")
   }
-
 }
