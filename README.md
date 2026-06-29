@@ -1,4 +1,4 @@
-This is a rewrite of the Android frontend to the home automation server that collects and presents the various devices in my home, including:
+This is a rewrite of the Android frontend to the home automation server that collects and presents various useful functions in my home, including:
 - Light switches
 - Fermenter for fermenting various fermentables
 - Weather display for inside (via thermostat) and outside (via weather data API) air conditions
