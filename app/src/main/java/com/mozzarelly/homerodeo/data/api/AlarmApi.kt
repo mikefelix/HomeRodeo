@@ -37,4 +37,6 @@ interface AlarmApi {
     @POST("alarm/t{days}/on")
     suspend fun undisable(@Path("days") days: String)
 
+    @POST("alarm/stop_mv73bEuCCGxD")
+    suspend fun turnOff()
 }

@@ -138,7 +138,7 @@ interface NetworkTestingConfig {
   fun shouldFailThisCall(request: Request): Boolean
 }
 
-inline fun <reified T: Any> ApiResponse<T>.resultOrElse(orElse: () -> T): T = if (this is ApiResult<T>) data else orElse()
+inline fun <reified T: Any> ApiResponse<T>.resultOrElse(orElse: (ApiResponse<T>) -> T): T = if (this is ApiResult<T>) data else orElse(this)
 inline fun <reified T: Any> ApiResponse<T>.resultOrNull(): T? = if (this is ApiResult<T>) data else null
 
 inline fun <reified T: Any> Response<T>?.toApiResponse(): ApiResponse<T> = this?.run {

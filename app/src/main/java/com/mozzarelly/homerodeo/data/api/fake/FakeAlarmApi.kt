@@ -92,4 +92,9 @@ class FakeAlarmApi : AlarmApi {
             if (it.num == dayNum) it.copy(disabled = false) else it
         })
     }
+
+    override suspend fun turnOff() {
+        delay(500)
+        alarm = alarm.copy(on = false)
+    }
 }

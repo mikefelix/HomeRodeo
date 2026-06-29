@@ -107,6 +107,14 @@ fun AlarmScreen(
           }
         }
       }
+
+      if (alarm.allowTurnOff){
+        Row(modifier = Modifier.padding(16.dp)) {
+          PrimaryButton("Turn off alarm") {
+            actions.turnOff()
+          }
+        }
+      }
     }
   }
 }
@@ -262,6 +270,7 @@ fun AlarmBottomSheetPreview() {
     override fun dismissEdit() {}
     override fun setTime(day: Day, time: Time?, saveAsSetting: Boolean) {}
     override fun disableToday() {}
+    override fun turnOff() {}
   }
 
   HomeRodeoTheme {

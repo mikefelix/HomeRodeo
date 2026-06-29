@@ -136,7 +136,7 @@ class DevicesRepository @Inject constructor(
   private fun loadAliases(){
     runBlocking {
       if (!namesRepository.hasData){
-        val groups = api.getDeviceGroups().resultOrElse { error("Loading device groups failed.") }
+        val groups = api.getDeviceGroups().resultOrElse { error("Loading device groups failed. ${it.debug { "" }}") }
         namesRepository.setDeviceGroups(groups)
       }
 

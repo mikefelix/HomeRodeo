@@ -1,9 +1,7 @@
 package com.mozzarelly.homerodeo
 
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
@@ -139,7 +137,7 @@ class AlarmScreenTest {
     }
 
     @Test
-    fun showsDisableTodayButtonWhenAlarmIsRingingToday() {
+    fun showsTurnOffButtonWhenAlarmIsRinging() {
         val alarm = makeAlarm(on = true, nextNum = 0)
         composeRule.setContent {
             AlarmScreen(
@@ -149,7 +147,23 @@ class AlarmScreenTest {
                 actions = actions,
             )
         }
-        composeRule.onNodeWithText("I'm awake early!").assertIsDisplayed()
+
+        composeRule.onNodeWithText("Turn off alarm").assertIsDisplayed()
+    }
+
+    @Test
+    fun hidesTurnOffButtonWhenAlarmIsNotRinging() {
+        val alarm = makeAlarm(on = false, nextNum = 0)
+        composeRule.setContent {
+            AlarmScreen(
+                state = UiState.success(alarm),
+                sheetState = remember { mutableStateOf(null) },
+                onRetry = {},
+                actions = actions,
+            )
+        }
+
+        composeRule.onNodeWithText("Turn off alarm").assertIsNotDisplayed()
     }
 
     @Test
@@ -179,6 +193,7 @@ class AlarmScreenTest {
             override fun dismissEdit() = actions.dismissEdit()
             override fun setTime(day: Day, time: Time?, saveAsSetting: Boolean) = actions.setTime(day, time, saveAsSetting)
             override fun disableToday() = actions.disableToday()
+            override fun turnOff() { actions.turnOff() }
         }
 
         composeRule.setContent {

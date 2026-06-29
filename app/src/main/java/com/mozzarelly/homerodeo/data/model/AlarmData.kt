@@ -63,6 +63,9 @@ data class AlarmData(
   val allowDisableToday: Boolean
       get() = !disabledToday && next == today && status.endsWith("ringing")
 
+  val allowTurnOff: Boolean
+      get() = status.endsWith("ringing")
+
   val next by lazy { days.find { it.num == nextNum } ?: throw RuntimeException("Can't find day $nextNum") }
 
     private val nextDayName = next.desc(inReferenceTo = today)
